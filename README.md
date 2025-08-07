@@ -1,6 +1,4 @@
-# Hand Gesture Control System
-
-ระบบควบคุมอุปกรณ์ผ่านท่าทางมือแบบเรียลไทม์ที่ใช้ AI สำหรับการตรวจจับมือและควบคุมแฟลช ESP32 Camera
+# 🤖 Hand Gesture Control System + ESP32 Log Manager
 
 ## 🌟 Features
 
@@ -9,12 +7,18 @@
 - **3 โหมดการทำงาน**: Normal, Symbol Control, Volume Control
 - **ปรับปรุงประสิทธิภาพ** สำหรับการทำงานแบบ Real-time
 - **รองรับกล้องหลายแหล่ง** (ESP32 stream และกล้องในเครื่อง)
+- **ควบคุมผ่าน Telegram Bot ได้**
+- **ESP32 เก็บ log ล่าสุด 20 รายการใน buffer**
+- **สั่งส่ง log ผ่านคำสั่ง /sent ผ่าน Telegram ได้**
+- **ESP32 ทำงานเป็น HTTP Server และเชื่อมต่อกับ WiFi**
 
 ## 📋 Requirements
 
 ### Hardware
 - **ESP32-CAM AI Thinker Module** (พร้อม Flash LED)
 - **FTDI USB to Serial Adapter** (สำหรับการอัปโหลดโค้ด)
+- **ESP8266**
+- **Telegram account** (พร้อม Flash LED)
 - คอมพิวเตอร์ที่มีกล้อง (หากไม่มี ESP32)
 
 ### Software Dependencies
@@ -60,14 +64,13 @@ numpy>=1.21.0
 const char *ssid = "ชื่อ_WiFi_ของคุณ";
 const char *password = "รหัสผ่าน_WiFi";
 ```
-
-#### 1.2 การเชื่อมต่อฮาร์ดแวร์ ESP32-CAM
-- **VCC** → 5V
-- **GND** → GND  
-- **U0R** → TX ของ FTDI
-- **U0T** → RX ของ FTDI
-- **GPIO 0** → GND (เฉพาะตอนอัปโหลด)
-- **RST** → เชื่อมกับ GND แล้วปล่อย เพื่อ Reset
+### Arduino IDE สำหรับ ESP8266
+- `ESP8266WiFi`
+- `ESP8266WebServer`
+- `WiFiClientSecure`
+- `ESP8266HTTPClient`
+- `UniversalTelegramBot`
+- `ArduinoJson`
 
 #### 1.3 หลังอัปโหลดเสร็จ
 1. ถอด GPIO 0 จาก GND
@@ -254,26 +257,6 @@ MIN_DISTANCE = 0.02         # ระยะต่ำสุดสำหรับ V
 - **Finger Count**: จำนวนนิ้วแต่ละมือ (L=ซ้าย, R=ขวา)
 - **Volume Level**: ระดับเสียง (เฉพาะโหมด Volume Control)
 - **Hand Landmarks**: จุดและเส้นเชื่อมของมือ
-
-## 🔄 Flow การทำงาน
-
-```
-NORMAL → (Open Hand 1.5s) → SYMBOL → (Left Hand Open 1.5s) → VOLUME
-   ↑                           ↓                                ↓
-   ← (OK 0.8s) ← ← ← ← ← ← ← ← ← ← ← (OK 0.8s) ← ← ← ← ← ← ← ← ← ←
-                            ↓                                    ↑
-                     (Right Hand Open 1.5s) → → → → → → → → → → →
-```
-
-## 📁 โครงสร้างโปรเจกต์
-
-```
-Hand-Gesture-Control-System/
-├── hand_gesture_control.py     # Python script หลัก
-├── esp32_camera_server.ino     # ESP32-CAM server code
-├── requirements.txt            # Python dependencies
-├── README.md                   # คู่มือนี้
-```
 
 ## 💡 ESP32-CAM Code อธิบาย
 
